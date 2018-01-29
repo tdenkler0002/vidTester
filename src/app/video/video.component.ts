@@ -27,19 +27,22 @@ export class VideoComponent implements OnInit {
   }
 
   initVideoPlayer(): void {
-    this.vidPlayer = document.getElementById("video-player");
+    this.vidPlayer = document.getElementById('video-player');
     this.vidPlayer.controls = false;
 
-    this.vidProgressBar = document.getElementById("progress-bar");
-    this.btnPlayPause = document.getElementById("play-pause");
-    this.btnMute = document.getElementById("mute");
+    this.vidProgressBar = document.getElementById('progress-bar');
+    this.btnPlayPause = document.getElementById('play-pause');
+    this.btnMute = document.getElementById('mute');
+
+    // Manually setting volume
+    this.vidPlayer.volume = 0.5;
 
     this.sources = [
       {
         src: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
         type: 'video/mp4'
       }
-    ]
+    ];
 
   }
 
@@ -48,15 +51,15 @@ export class VideoComponent implements OnInit {
     let action: string;
 
     if (this.vidPlayer.paused || this.vidPlayer.ended) {
-      action = "pause";
+      action = 'pause';
       this.vidPlayer.play();
     } else {
-      action = "play";
+      action = 'play';
       this.vidPlayer.pause();
     }
 
     this.changeBtnType(this.btnPlayPause, action);
-    
+
   }
 
   // Video API stop is the same as pause -- Simulated
@@ -68,23 +71,42 @@ export class VideoComponent implements OnInit {
     this.changeBtnType(this.btnPlayPause, 'play');
   }
 
+  // TODO: Rip this out to change
   toggleVolume(volumeToggle: string): void {
-    let level: number;
 
     if (volumeToggle === '+') {
-      level = this.vidPlayer.volume == 1 ? 0 : 0.1;
+        // 1 is the max - so if the volume is 1, level = 0
+        this.vidPlayer.volume += this.vidPlayer.volume === 1 ? 0 : 0.1;
     } else {
-      level = this.vidPlayer.volume == 0 ? 0 : -0.1;
+        // 0 is the min - so if volume is 0, level = 0
+        this.vidPlayer.volume -= (this.vidPlayer.volume === 0 ? 0 : 0.1);
     }
-
-    this.vidPlayer.volume += level;
+    this.vidPlayer.volume = parseFloat(this.vidPlayer.volume).toFixed(1);
     console.log('volume is now: ' + this.vidPlayer.volume);
+
+  }
+
+  toggleMute(): void {
+      if (this.vidPlayer.muted) {
+        this.changeBtnType(this.btnMute, 'mute');
+        this.vidPlayer.muted = false;
+      } else {
+        this.changeBtnType(this.btnMute, 'unmute');
+        this.vidPlayer.muted = true;
+      }
 
   }
 
   // Event listener for Play/Pause on the video control
   onPlayStatusChanged(target: any, action: string): void {
     this.changeBtnType(target, action);
+  }
+
+  onVolumeChanged(target: any): void {
+    if (this.vidPlayer.muted || this.vidPlayer.volume === 0) {
+        this.changeBtnType(target, 'unmute');
+    }
+
   }
 
   // Changes the Button Control type/text
