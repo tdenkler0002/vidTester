@@ -1,24 +1,31 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FullscreenDirective } from '../directives/fullscreen.directive';
 
 interface ISource {
   src: string;
   type: string;
 }
 
+interface IVideoSize {
+    width: string;
+    height: string;
+}
+
 @Component({
   selector: 'app-video',
   templateUrl: './video.component.html',
-  styleUrls: ['./video.component.css']
+  styleUrls: ['./video.component.css'],
 })
 export class VideoComponent implements OnInit {
 
   sources: Array<ISource> = [];
-
+  vidSize: IVideoSize = {width: '480px', height: '320px'};
 
   private vidPlayer: any = null;
   private vidProgressBar: any = null;
   private btnPlayPause: any = null;
   private btnMute: any = null;
+  private isFullScreen = false;
 
   constructor() { }
 
@@ -95,6 +102,10 @@ export class VideoComponent implements OnInit {
         this.vidPlayer.muted = true;
       }
 
+  }
+
+  toggleFullScreen(): void {
+    this.isFullScreen = !this.isFullScreen;
   }
 
   // Event listener for Play/Pause on the video control

@@ -1,10 +1,15 @@
-<video id="video-player" controls (play)="onPlayStatusChanged($event.target, 'pause')" (pause)="onPlayStatusChanged($event.target, 'play')"
-    (volumechange)="onVolumeChanged($event.target)">
+<video id="video-player" controls
+    (play)="onPlayStatusChanged($event.target, 'pause')"
+    (pause)="onPlayStatusChanged($event.target, 'play')"
+    (volumechange)="onVolumeChanged($event.target)"
+    [appFullScreen]="isFullScreen"
+    [width]="vidSize.width"
+    [height]="vidSize.height">
     <source *ngFor="let src of sources" [src]="src.src" [type]="src.type">
 </video>
 
 <div id="controls">
-    <button id="full-scree" class="full-screen" title="full-screen" (click)="toggleFullScreen()">[+]</button>
+    <button id="fullScreen" class="full-screen" title="full-screen" (click)="toggleFullScreen()">[+]</button>
     <button id="play-pause" class="play" title="play" (click)="togglePlayPause()">Play</button>
     <button id="stop" class="stop" title="stop" (click)="toggleStop()">Stop</button>
 
